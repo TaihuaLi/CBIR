@@ -6,7 +6,7 @@ Created on Tue May 30 15:31:45 2017
 @author: taihuali
 """
 
-import cv2, os, json
+import cv2, os
 import numpy as np
 import pandas as pd
 
@@ -16,14 +16,14 @@ image_files = [x for x in os.listdir(feature_directory) if x.endswith('jpg')]
 
 SIFT_features = {}
 SIFT_keypoints = {}
-sift = cv2.xfeatures2d.SIFT_create()    
+sift = cv2.xfeatures2d.SIFT_create(nfeatures=100)    
 for i in image_files:
     image_dir = feature_directory+'/'+i
     grayImage = cv2.cvtColor(cv2.imread(image_dir), cv2.COLOR_BGR2GRAY)
     kp, feat = sift.detectAndCompute(grayImage, None)
     SIFT_features[i] = feat
     SIFT_keypoints[i] = kp
-np.save('SIFT_features.npy', SIFT_features)
+np.save('../SIFT_features.npy', SIFT_features)
 #np.save('SIFT_keypoints.npy', SIFT_keypoints)
 # to load: np.load('SIFT_features.npy')
 
@@ -46,6 +46,6 @@ image_fnames = np.array(image_files)
 labels = np.array(labels)
 labeled = pd.DataFrame(np.vstack([image_fnames, labels]).T, columns=['Filename', 'Label'])
 
-writer = pd.ExcelWriter('Labels.xlsx')
+writer = pd.ExcelWriter('../Labels.xlsx')
 labeled.to_excel(writer, 'sheet1', index=False)
 writer.save()
